@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Describe This Color</title>
+    <title>Describe This Color!</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <style>
@@ -54,9 +54,12 @@
                     <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
                         <h1 id="hexlabel" class="display-4 py-2 text-truncate"></h1>
                         <div class="px-2">
-                            <form onsubmit="return submitForm()" class="justify-content-center">
+                            <form id="colorForm" class="justify-content-center needs-validation" novalidate="">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Describe this color" autofocus required>
+                                    <input id="descInput" name="description" type="text" class="form-control" placeholder="How would you describe this color?" pattern="[A-Za-z0-9\s]+" maxlength="30" autocomplete="off" autofocus required>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid description (alphanumeric characters only).
+                                    </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-lg">Submit</button>
                             </form>
@@ -67,28 +70,51 @@
         </div>
     </section>
 
+    <script src="https://www.google.com/recaptcha/api.js?render=6Lfp3NkUAAAAAI82ud6HdW-4a_ekNrr7-lvYnpdU"></script>
     <script>
         let cover = document.getElementById('cover');
         let hexlabel = document.getElementById('hexlabel');
-        let rr = Math.floor(Math.random() * 255);
-        let gg = Math.floor(Math.random() * 255);
-        let bb = Math.floor(Math.random() * 255);
-        let colorStr = "#" + rr.toString(16).padStart(2, '0') + gg.toString(16).padStart(2, '0') + bb.toString(16).padStart(2, '0');
-        cover.style.backgroundColor = `rgba(${rr}, ${gg}, ${bb}, 1)`;
-        hexlabel.innerText = colorStr;
+        let descInput = document.getElementById('descInput');
+        generateRandomColor();
 
-        function submitForm() {
-            fetch('http://localhost:5000/api/descriptions', {
-                method: 'post',
-                body: JSON.stringify({hexlabel, colorStr}),
-                headers: {
-                    'content-type': 'application/json',
-                    'authorization': `Bearer ${localStorage.token}`
+        window.addEventListener('load', function() {
+            var form = document.getElementsByClassName('needs-validation')[0];
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                if (form.checkValidity() === false) {
+                    event.stopPropagation();
+                } else {
+                    let hexVal = hexlabel.innerText;
+                    let description = descInput.value;
+
+                    grecaptcha.ready(function() {
+                        grecaptcha.execute('6Lfp3NkUAAAAAI82ud6HdW-4a_ekNrr7-lvYnpdU', {action: 'homepage'}).then(function(token) {
+                            fetch('http://describethiscolor.xyz:5000/api/descriptions', {
+                                method: 'POST',
+                                body: JSON.stringify({hexVal, description, token}),
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                }
+                            }).then(res => res.json())
+                            .then((desc) => {
+                                console.log(desc);
+                                window.location.reload();
+                            });
+                        });
+                    });
                 }
-            }).then(res => res.json())
-                .then((desc) => {
-                    console.log(desc);
-                });
+                form.classList.add('was-validated');
+            });
+        }, false);
+        
+        function generateRandomColor() {
+            let rr = Math.floor(Math.random() * 255);
+            let gg = Math.floor(Math.random() * 255);
+            let bb = Math.floor(Math.random() * 255);
+            let colorStr = "#" + rr.toString(16).padStart(2, '0') + gg.toString(16).padStart(2, '0') + bb.toString(16).padStart(2, '0');
+            cover.style.backgroundColor = `rgba(${rr}, ${gg}, ${bb}, 1)`;
+            hexlabel.innerText = colorStr;
         }
     </script>
 
