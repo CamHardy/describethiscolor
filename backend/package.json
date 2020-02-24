@@ -1,20 +1,27 @@
 {
   "name": "describethiscolor_backend",
   "version": "0.0.1",
-  "description": "",
+  "description": "Backend for describethiscolor.xyz",
+  "repository": "https://github.com/CamHardy/describethiscolor.git",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Cam Hardy",
   "license": "MIT",
   "dependencies": {
     "@hapi/joi": "^17.1.0",
-    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "monk": "^7.1.2",
     "node-fetch": "^2.6.0",
     "volleyball": "^1.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2",
+    "uglify-js": "^3.8.0"
   }
 }
