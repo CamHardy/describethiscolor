@@ -14,8 +14,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Describe This Color!</title>
+    <title>Describe This Color!</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#333333">
+    <meta name="theme-color" content="#ffffff">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script type="text/javascript" src="jss.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <style>
         #cover {
             background-color: rgba(33, 33, 33, 1);
@@ -56,12 +69,12 @@
                         <div class="px-2">
                             <form id="colorForm" class="justify-content-center needs-validation" novalidate="">
                                 <div class="form-group">
-                                    <input id="descInput" name="description" type="text" class="form-control" placeholder="How would you describe this color?" pattern="[A-Za-z0-9\s]+" maxlength="30" autocomplete="off" autofocus required>
+                                    <input id="descInput" name="description" type="text" class="form-control" placeholder="Describe this color!" pattern="[A-Za-z0-9\s]{1,30}" autocomplete="off" autofocus required>
                                     <div class="invalid-feedback">
                                         Please provide a valid description (alphanumeric characters only).
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                                <button id="subBut" type="submit" class="btn btn-outline-primary btn-lg">Submit</button>
                             </form>
                         </div>
                     </div>
@@ -69,57 +82,7 @@
             </div>
         </div>
     </section>
-
     <script src="https://www.google.com/recaptcha/api.js?render=6Lfp3NkUAAAAAI82ud6HdW-4a_ekNrr7-lvYnpdU"></script>
-    <script>
-        let cover = document.getElementById('cover');
-        let hexlabel = document.getElementById('hexlabel');
-        let descInput = document.getElementById('descInput');
-        generateRandomColor();
-
-        window.addEventListener('load', function() {
-            var form = document.getElementsByClassName('needs-validation')[0];
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
-                if (form.checkValidity() === false) {
-                    event.stopPropagation();
-                } else {
-                    let hexVal = hexlabel.innerText;
-                    let description = descInput.value;
-
-                    grecaptcha.ready(function() {
-                        grecaptcha.execute('6Lfp3NkUAAAAAI82ud6HdW-4a_ekNrr7-lvYnpdU', {action: 'homepage'}).then(function(token) {
-                            fetch('http://describethiscolor.xyz:5000/api/descriptions', {
-                                method: 'POST',
-                                body: JSON.stringify({hexVal, description, token}),
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                }
-                            }).then(res => res.json())
-                            .then((desc) => {
-                                console.log(desc);
-                                window.location.reload();
-                            });
-                        });
-                    });
-                }
-                form.classList.add('was-validated');
-            });
-        }, false);
-        
-        function generateRandomColor() {
-            let rr = Math.floor(Math.random() * 255);
-            let gg = Math.floor(Math.random() * 255);
-            let bb = Math.floor(Math.random() * 255);
-            let colorStr = "#" + rr.toString(16).padStart(2, '0') + gg.toString(16).padStart(2, '0') + bb.toString(16).padStart(2, '0');
-            cover.style.backgroundColor = `rgba(${rr}, ${gg}, ${bb}, 1)`;
-            hexlabel.innerText = colorStr;
-        }
-    </script>
-
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="describethiscolor.min.js"></script>
 </body>
 </html>
